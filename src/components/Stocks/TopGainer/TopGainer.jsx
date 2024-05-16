@@ -9,26 +9,37 @@ const TopGainer = () => {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   
-
-  useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/stocks");
-        const data = await response.json();
-        console.log(data);
-
-        if (data.length !== 0) {
-          setStocks(data);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  const symbols = [
+    "RELIANCE",
+    "TCS",
+    "HDFCBANK",
+    "INFY"
+  ];
+  
+  const fetchStocks = async () => {
+    try {
+      const requests = symbols.map(async (symbol) => {
+        const response = await fetch(`http://localhost:4000/stocks/${symbol}`);
+        return response.json();
+      });
+  
+      const results = await Promise.all(requests);
+  
+      const filteredResults = results.filter(data => data && Object.keys(data).length !== 0);
+      if (filteredResults.length !== 0) {
+        setStocks(filteredResults);
         setLoading(false);
       }
-    };
-
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
     fetchStocks();
   }, []);
+  
 
   return (
     <div className="container topMargine">
@@ -66,3 +77,4 @@ const TopGainer = () => {
 };
 
 export default TopGainer;
+

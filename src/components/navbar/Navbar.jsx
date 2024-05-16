@@ -1,19 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
 import { IoSearch } from "react-icons/io5";
 import Vertical from "./verticalNavbar/Vertical";
 
-const Navbar = () => {
+const Navbar = ({searchData}) => {
+  const [data1,setData] = useState();
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const query = event.target.elements.search.value;
-    // try {
-    //   const response = await axios.get(`http://localhost:4000/search?q=${query}`);
-    //   console.log(response.data); // Use the data however you need
-    // } catch (error) {
-    //   console.error('Error fetching data:', error);
-    // }
+    try {
+      const response = await axios.get(`http://localhost:4000/search?q=${query}`);
+      const data = response.data;
+      console.log(data);
+      setData(data);
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    searchData(data1)
   };
+ 
   return (
     <>
       <div className="navbar1">

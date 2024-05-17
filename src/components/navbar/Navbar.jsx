@@ -2,23 +2,34 @@ import React, { useState } from "react";
 import "./Navbar.css";
 import { IoSearch } from "react-icons/io5";
 import Vertical from "./verticalNavbar/Vertical";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({searchData}) => {
   const [data1,setData] = useState();
+  const navigate = useNavigate()
   
   const handleSubmit = async (event) => {
     event.preventDefault();
     const query = event.target.elements.search.value;
+    setError(null);
+    setData(null);
     try {
-      const response = await axios.get(`http://localhost:4000/search?q=${query}`);
+      const response = await axios.get(`http://localhost:4000/api/search?q=${query}`);
       const data = response.data;
-      console.log(data);
-      setData(data);
-      
+
+      if (response.status === 200 && data) {
+        console.log(data);
+        setData(data);
+        navigate('/searchStock');
+      } else {
+        setError('No data found for the given symbol');
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Error fetching data');
     }
     searchData(data1)
+    console.log(query);
   };
  
   return (
@@ -35,10 +46,10 @@ const Navbar = ({searchData}) => {
               </div>
               <h4>Stock Market</h4>
             </div>
-            <div className="nav-search" onSubmit={handleSubmit}>
+            <form className="nav-search" onSubmit={handleSubmit} >
               <input type="text" name="search" required />
               <IoSearch className="search-icon" />
-            </div>
+            </form>
             <div className="">
               <ul className="nav-links">
                 <li>

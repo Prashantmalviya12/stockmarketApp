@@ -35,7 +35,7 @@ router.get("/stocks/:symbol", async (req, res) => {
   const symbol = req.params.symbol;
   try {
     const response = await axios.get(
-      `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}.BSE&outputsize=full&apikey=XIIB8DLSVGZYQ75U`
+      `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}.BSE&outputsize=full&apikey=J2ROZWF12E1J9I1N`
     );
     res.json(response.data);
   } catch (error) {

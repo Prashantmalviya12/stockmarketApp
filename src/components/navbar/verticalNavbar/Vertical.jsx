@@ -4,20 +4,24 @@ import { VscThreeBars } from "react-icons/vsc";
 import { IoSearchSharp } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 
-const Vertical = () => {
+const Vertical = ({searchData}) => {
   const [scrolldown, setScrollDown] = useState(false);
   const [verSearch, setsearch] = useState(false);
+  const [data1,setData] = useState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const query = event.target.elements.search.value;
-    console.log(query);
-    // try {
-    //   const response = await axios.get(`http://localhost:4000/search?q=${query}`);
-    //   console.log(response.data); // Use the data however you need
-    // } catch (error) {
-    //   console.error('Error fetching data:', error);
-    // }
+    try {
+      const response = await axios.get(`http://localhost:4000/api/search?q=${query}`);
+      const data = response.data;
+      console.log(data);
+      setData(data);
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    searchData(data1)
   };
 
   return (

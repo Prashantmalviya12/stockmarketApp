@@ -8,24 +8,23 @@ const TopGainer = () => {
   const navigate = useNavigate();
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  const symbols = [
-    "RELIANCE",
-    "TCS",
-    "HDFCBANK",
-    "INFY"
-  ];
-  
+
+  const symbols = ["RELIANCE", "TCS", "HDFCBANK", "INFY"];
+
   const fetchStocks = async () => {
     try {
       const requests = symbols.map(async (symbol) => {
-        const response = await fetch(`http://localhost:4000/stocks/${symbol}`);
+        const response = await fetch(
+          `http://localhost:4000/api/stocks/${symbol}`
+        );
         return response.json();
       });
-  
+
       const results = await Promise.all(requests);
-  
-      const filteredResults = results.filter(data => data && Object.keys(data).length !== 0);
+
+      const filteredResults = results.filter(
+        (data) => data && Object.keys(data).length !== 0
+      );
       if (filteredResults.length !== 0) {
         setStocks(filteredResults);
         setLoading(false);
@@ -35,11 +34,10 @@ const TopGainer = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchStocks();
   }, []);
-  
 
   return (
     <div className="container topMargine">
@@ -56,20 +54,21 @@ const TopGainer = () => {
         </div>
         {loading ? (
           <p>Loading...</p>
-        ) : (
+        ) : Array.isArray(stocks) && stocks.length > 0 ? (
           <Row className="gap-2">
-            {Array.isArray(stocks) &&
-              stocks.map((stock, index) => (
-                <Card style={{ width: "18rem" }} className="mt-4" key={index}>
-                  <Card.Body>
-                    <Card.Title>{stock["Meta Data"]["2. Symbol"]}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted mt-4">
-                      {stock["Time Series (Daily)"]["2024-05-14"]["1. open"]}
-                    </Card.Subtitle>
-                  </Card.Body>
-                </Card>
-              ))}
+            {stocks.map((stock, index) => (
+              <Card style={{ width: "18rem" }} className="mt-4" key={index}>
+                <Card.Body>
+                  <Card.Title>{stock["Meta Data"]["2. Symbol"]}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted mt-4">
+                    {stock["Time Series (Daily)"]["2024-05-14"]["1. open"]}
+                  </Card.Subtitle>
+                </Card.Body>
+              </Card>
+            ))}
           </Row>
+        ) : (
+          <p>No stocks found</p>
         )}
       </div>
     </div>
@@ -77,4 +76,3 @@ const TopGainer = () => {
 };
 
 export default TopGainer;
-
